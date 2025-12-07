@@ -23,16 +23,8 @@ export default function OrderColumn({
   onMoveToNext,
 }: OrderColumnProps) {
   const getHeaderColor = () => {
-    switch (status) {
-      case 'queue':
-        return 'bg-status-queue';
-      case 'preparing':
-        return 'bg-status-preparing';
-      case 'ready':
-        return 'bg-status-ready';
-      default:
-        return 'bg-slate-700';
-    }
+    // Column headers should be neutral - urgency is shown on cards
+    return 'bg-slate-700';
   };
 
   return (

@@ -15,7 +15,7 @@ export default function KitchenScreen() {
       <KitchenHeader />
 
       {/* Kanban Board - 3 Columns */}
-      <View className="flex-1 flex-row gap-2 p-2">
+      <View className="flex-1 flex-row gap-2 p-2 px-4">
         {/* Queue Column */}
         <OrderColumn
           title="En Cola"
