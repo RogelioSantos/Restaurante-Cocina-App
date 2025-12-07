@@ -27,6 +27,40 @@ export const Colors = {
   },
 };
 
+// Kitchen-specific colors
+export const KitchenColors = {
+  background: '#0F172A',
+  surface: '#1E293B',
+  border: '#334155',
+  text: {
+    primary: '#F1F5F9',
+    secondary: '#94A3B8',
+    muted: '#64748B',
+  },
+  status: {
+    queue: {
+      light: '#FEF3C7',
+      default: '#F59E0B',
+      dark: '#D97706',
+    },
+    preparing: {
+      light: '#DBEAFE',
+      default: '#3B82F6',
+      dark: '#2563EB',
+    },
+    ready: {
+      light: '#D1FAE5',
+      default: '#10B981',
+      dark: '#059669',
+    },
+  },
+  priority: {
+    normal: '#3B82F6',
+    warning: '#F59E0B',
+    urgent: '#EF4444',
+  },
+};
+
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */
