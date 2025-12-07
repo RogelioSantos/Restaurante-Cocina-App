@@ -40,14 +40,14 @@ export default function OrderItem({ item, onToggle }: OrderItemProps) {
         <View className="flex-row items-center">
           <Text
             className={`font-bold text-xl mr-2 ${
-              item.completed ? 'text-slate-500 line-through' : 'text-white'
+              item.completed ? 'text-slate-300 line-through' : 'text-white'
             }`}
           >
             {item.quantity}x
           </Text>
           <Text
             className={`font-semibold text-lg flex-1 ${
-              item.completed ? 'text-slate-500 line-through' : 'text-slate-100'
+              item.completed ? 'text-slate-300 line-through' : 'text-slate-100'
             }`}
           >
             {item.name}
@@ -61,7 +61,7 @@ export default function OrderItem({ item, onToggle }: OrderItemProps) {
               <Text
                 key={index}
                 className={`text-base font-medium ${
-                  item.completed ? 'text-slate-600' : 'text-amber-400'
+                  item.completed ? 'text-slate-400' : 'text-amber-400'
                 }`}
               >
                 ⚠️ {modifier}

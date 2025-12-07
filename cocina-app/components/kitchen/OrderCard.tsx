@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Order, OrderStatus } from '@/types/order';
+import { Order } from '@/types/order';
 import OrderItem from './OrderItem';
 import TimeAgo from './TimeAgo';
 
@@ -27,27 +27,17 @@ export default function OrderCard({
 
   const getPriorityColor = () => {
     const elapsed = getElapsedMinutes();
-    if (elapsed >= 20) return 'border-priority-urgent';
-    if (elapsed >= 10) return 'border-priority-warning';
+    if (elapsed >= 10) return 'border-priority-urgent';
+    if (elapsed >= 5) return 'border-priority-warning';
     return 'border-slate-600';
   };
 
   const getHeaderColor = () => {
     const elapsed = getElapsedMinutes();
-    if (elapsed >= 20) return 'bg-priority-urgent';
-    if (elapsed >= 10) return 'bg-priority-warning';
-    
-    // Status colors
-    switch (order.status) {
-      case 'queue':
-        return 'bg-status-queue';
-      case 'preparing':
-        return 'bg-status-preparing';
-      case 'ready':
-        return 'bg-status-ready';
-      default:
-        return 'bg-slate-700';
-    }
+    // Color indicates URGENCY based on time, not status
+    if (elapsed >= 10) return 'bg-priority-urgent';      // Red: > 10 minutes (urgent)
+    if (elapsed >= 5) return 'bg-priority-warning';      // Yellow: 5-10 minutes (attention)
+    return 'bg-status-ready';                             // Green: < 5 minutes (calm)
   };
 
   const getButtonText = () => {
@@ -70,7 +60,7 @@ export default function OrderCard({
       case 'preparing':
         return 'bg-status-ready';
       case 'ready':
-        return 'bg-slate-600';
+        return 'bg-status-ready border-2 border-white';  // Active green with white border
       default:
         return 'bg-blue-600';
     }
@@ -87,14 +77,12 @@ export default function OrderCard({
             <Text className="text-white font-bold text-2xl mr-2">
               {order.type === 'dine-in' ? '🍽️' : '📦'}
             </Text>
-            <Text className="text-white font-bold text-2xl">
+            <Text className="text-white font-bold text-2xl mr-3">
               {order.type === 'dine-in'
                 ? `Mesa ${order.tableNumber}`
                 : 'PARA LLEVAR'}
             </Text>
-          </View>
-          <View className="bg-black/30 px-3 py-1.5 rounded-lg">
-            <Text className="text-white font-bold text-lg">
+            <Text className="text-white font-bold text-3xl">
               #{order.orderNumber}
             </Text>
           </View>
