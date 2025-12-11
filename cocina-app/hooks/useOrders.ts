@@ -78,13 +78,19 @@ export function useOrders() {
         'Se ha notificado al mesero que el pedido está listo para recoger.'
       );
 
-      return prevOrders.map(o =>
+      // Move to ready and trigger auto-move
+      const newOrders = prevOrders.map(o =>
         o.id === orderId
           ? { ...o, status: 'ready' as OrderStatus, updatedAt: new Date() }
           : o
       );
+      
+      // Manually trigger auto-move after state update
+      setTimeout(() => autoMoveToPreparation(), 0);
+      
+      return newOrders;
     });
-  }, [areAllItemsCompleted]);
+  }, [areAllItemsCompleted, autoMoveToPreparation]);
 
   // Mark order as delivered (simulates waiter confirmation)
   const markAsDelivered = useCallback((orderId: string) => {
@@ -95,10 +101,11 @@ export function useOrders() {
     );
 
     setOrders((prevOrders) => {
-      // Remove order from list
+      // Remove order from list and trigger auto-move
+      setTimeout(() => autoMoveToPreparation(), 0);
       return prevOrders.filter(o => o.id !== orderId);
     });
-  }, []);
+  }, [autoMoveToPreparation]);
 
   // Move order to next status (for queue orders only now)
   const moveToNextStatus = useCallback((orderId: string) => {
@@ -138,11 +145,17 @@ export function useOrders() {
     [orders]
   );
 
-  // Auto-move orders from queue to preparing when space becomes available
+  // Auto-move orders from queue to preparing when component mounts and when orders change
   // TODO: Backend - Sincronizar estado de pedidos en tiempo real
   useEffect(() => {
-    autoMoveToPreparation();
-  }, [orders, autoMoveToPreparation]);
+    const preparingCount = orders.filter(o => o.status === 'preparing').length;
+    const queueCount = orders.filter(o => o.status === 'queue').length;
+    
+    // Only trigger if we have space and orders waiting
+    if (preparingCount < MAX_PREPARING_ORDERS && queueCount > 0) {
+      autoMoveToPreparation();
+    }
+  }, [orders.length, autoMoveToPreparation]);
 
   return {
     orders,
