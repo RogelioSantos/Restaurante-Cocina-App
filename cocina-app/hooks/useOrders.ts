@@ -2,7 +2,7 @@
  * useOrders hook - Manages order state and transitions between statuses
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Order, OrderStatus } from '@/types/order';
 import { mockOrders } from '@/data/mockOrders';
 import { MAX_PREPARING_ORDERS } from '@/constants/kitchen';
@@ -10,6 +10,7 @@ import { Alert } from 'react-native';
 
 export function useOrders() {
   const [orders, setOrders] = useState<Order[]>(mockOrders);
+  const shouldAutoMove = useRef(false);
 
   // Toggle individual item completion status
   const toggleItem = useCallback((orderId: string, itemId: string) => {
@@ -78,19 +79,16 @@ export function useOrders() {
         'Se ha notificado al mesero que el pedido está listo para recoger.'
       );
 
-      // Move to ready and trigger auto-move
-      const newOrders = prevOrders.map(o =>
+      // Mark that we should auto-move on next render
+      shouldAutoMove.current = true;
+      
+      return prevOrders.map(o =>
         o.id === orderId
           ? { ...o, status: 'ready' as OrderStatus, updatedAt: new Date() }
           : o
       );
-      
-      // Manually trigger auto-move after state update
-      setTimeout(() => autoMoveToPreparation(), 0);
-      
-      return newOrders;
     });
-  }, [areAllItemsCompleted, autoMoveToPreparation]);
+  }, [areAllItemsCompleted]);
 
   // Mark order as delivered (simulates waiter confirmation)
   const markAsDelivered = useCallback((orderId: string) => {
@@ -101,11 +99,11 @@ export function useOrders() {
     );
 
     setOrders((prevOrders) => {
-      // Remove order from list and trigger auto-move
-      setTimeout(() => autoMoveToPreparation(), 0);
+      // Mark that we should auto-move on next render
+      shouldAutoMove.current = true;
       return prevOrders.filter(o => o.id !== orderId);
     });
-  }, [autoMoveToPreparation]);
+  }, []);
 
   // Move order to next status (for queue orders only now)
   const moveToNextStatus = useCallback((orderId: string) => {
@@ -151,11 +149,12 @@ export function useOrders() {
     const preparingCount = orders.filter(o => o.status === 'preparing').length;
     const queueCount = orders.filter(o => o.status === 'queue').length;
     
-    // Only trigger if we have space and orders waiting
-    if (preparingCount < MAX_PREPARING_ORDERS && queueCount > 0) {
+    // Only trigger if we have space and orders waiting, or if explicitly requested
+    if ((preparingCount < MAX_PREPARING_ORDERS && queueCount > 0) || shouldAutoMove.current) {
+      shouldAutoMove.current = false;
       autoMoveToPreparation();
     }
-  }, [orders.length, autoMoveToPreparation]);
+  }, [orders.length]);
 
   return {
     orders,
