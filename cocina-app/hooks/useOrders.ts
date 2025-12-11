@@ -154,7 +154,7 @@ export function useOrders() {
       shouldAutoMove.current = false;
       autoMoveToPreparation();
     }
-  }, [orders.length]);
+  }, [orders.length, autoMoveToPreparation]);
 
   return {
     orders,
