@@ -12,12 +12,16 @@ interface OrderCardProps {
   order: Order;
   onToggleItem: (orderId: string, itemId: string) => void;
   onMoveToNext: (orderId: string) => void;
+  onConfirmOrder?: (orderId: string) => void;
+  onMarkAsDelivered?: (orderId: string) => void;
 }
 
 export default function OrderCard({
   order,
   onToggleItem,
   onMoveToNext,
+  onConfirmOrder,
+  onMarkAsDelivered,
 }: OrderCardProps) {
   // Determine priority based on elapsed time
   const getElapsedMinutes = () => {
@@ -45,9 +49,9 @@ export default function OrderCard({
       case 'queue':
         return 'Comenzar';
       case 'preparing':
-        return 'Marcar Listo';
+        return 'CONFIRMAR';
       case 'ready':
-        return 'Entregado';
+        return 'ENTREGADO';
       default:
         return 'Siguiente';
     }
@@ -63,6 +67,24 @@ export default function OrderCard({
         return 'bg-status-ready border-2 border-white';  // Active green with white border
       default:
         return 'bg-blue-600';
+    }
+  };
+
+  const handleButtonPress = () => {
+    switch (order.status) {
+      case 'queue':
+        onMoveToNext(order.id);
+        break;
+      case 'preparing':
+        if (onConfirmOrder) {
+          onConfirmOrder(order.id);
+        }
+        break;
+      case 'ready':
+        if (onMarkAsDelivered) {
+          onMarkAsDelivered(order.id);
+        }
+        break;
     }
   };
 
@@ -108,7 +130,7 @@ export default function OrderCard({
 
       {/* Action button */}
       <TouchableOpacity
-        onPress={() => onMoveToNext(order.id)}
+        onPress={handleButtonPress}
         className={`${getButtonColor()} p-4 items-center justify-center active:opacity-80`}
       >
         <Text className="text-white font-bold text-xl uppercase tracking-wider">
