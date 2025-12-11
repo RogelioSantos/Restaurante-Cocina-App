@@ -59,14 +59,12 @@ export default function OrderCard({
 
   const getButtonColor = () => {
     switch (order.status) {
-      case 'queue':
-        return 'bg-status-preparing';
       case 'preparing':
-        return 'bg-status-ready';
+        return 'bg-primary';
       case 'ready':
-        return 'bg-status-ready border-2 border-white';  // Active green with white border
+        return 'bg-primary border-2 border-white';  // Orange with white border
       default:
-        return 'bg-blue-600';
+        return 'bg-primary';
     }
   };
 
@@ -128,15 +126,17 @@ export default function OrderCard({
         ))}
       </View>
 
-      {/* Action button */}
-      <TouchableOpacity
-        onPress={handleButtonPress}
-        className={`${getButtonColor()} p-4 items-center justify-center active:opacity-80`}
-      >
-        <Text className="text-white font-bold text-xl uppercase tracking-wider">
-          {getButtonText()}
-        </Text>
-      </TouchableOpacity>
+      {/* Action button - only show for preparing and ready status */}
+      {order.status !== 'queue' && (
+        <TouchableOpacity
+          onPress={handleButtonPress}
+          className={`${getButtonColor()} p-4 items-center justify-center active:opacity-80`}
+        >
+          <Text className="text-white font-bold text-xl uppercase tracking-wider">
+            {getButtonText()}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
