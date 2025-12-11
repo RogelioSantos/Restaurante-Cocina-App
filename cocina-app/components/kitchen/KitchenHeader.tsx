@@ -35,17 +35,17 @@ export default function KitchenHeader() {
   };
 
   return (
-    <View className="bg-kitchen-surface border-b-2 border-kitchen-border px-6 py-4">
+    <View className="bg-primary border-b-2 border-primary-dark px-6 py-4">
       <View className="flex-row justify-between items-center">
         <View>
           <Text className="text-white text-3xl font-bold tracking-wide">
             👨‍🍳 RestaurApp Cocina
           </Text>
-          <Text className="text-slate-400 text-sm mt-1 capitalize">
+          <Text className="text-white/80 text-sm mt-1 capitalize">
             {formatDate(currentTime)}
           </Text>
         </View>
-        <View className="bg-kitchen-bg px-6 py-3 rounded-xl border border-kitchen-border">
+        <View className="bg-primary-dark px-6 py-3 rounded-xl border border-white/20">
           <Text className="text-white text-2xl font-mono font-bold tracking-wider">
             {formatTime(currentTime)}
           </Text>

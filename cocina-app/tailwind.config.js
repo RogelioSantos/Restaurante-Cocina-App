@@ -8,6 +8,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Brand primary color
+        primary: {
+          light: '#FF9A3C',
+          DEFAULT: '#FF8108',
+          dark: '#E67307',
+        },
         // Dark theme for kitchen environment
         kitchen: {
           bg: '#0F172A',        // Deep dark background

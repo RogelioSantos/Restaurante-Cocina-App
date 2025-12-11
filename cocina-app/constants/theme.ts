@@ -29,6 +29,12 @@ export const Colors = {
 
 // Kitchen-specific colors
 export const KitchenColors = {
+  // Brand primary color (orange)
+  primary: {
+    light: '#FF9A3C',
+    default: '#FF8108',
+    dark: '#E67307',
+  },
   background: '#0F172A',
   surface: '#1E293B',
   border: '#334155',
