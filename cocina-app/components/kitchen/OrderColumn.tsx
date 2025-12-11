@@ -13,6 +13,9 @@ interface OrderColumnProps {
   orders: Order[];
   onToggleItem: (orderId: string, itemId: string) => void;
   onMoveToNext: (orderId: string) => void;
+  onConfirmOrder?: (orderId: string) => void;
+  onMarkAsDelivered?: (orderId: string) => void;
+  maxOrders?: number;
 }
 
 export default function OrderColumn({
@@ -21,6 +24,9 @@ export default function OrderColumn({
   orders,
   onToggleItem,
   onMoveToNext,
+  onConfirmOrder,
+  onMarkAsDelivered,
+  maxOrders,
 }: OrderColumnProps) {
   const getHeaderColor = () => {
     // Column headers should be neutral - urgency is shown on cards
@@ -35,7 +41,7 @@ export default function OrderColumn({
           <Text className="text-white font-bold text-xl">{title}</Text>
           <View className="bg-black/30 px-3 py-1 rounded-full">
             <Text className="text-white font-bold text-lg">
-              {orders.length}
+              {maxOrders ? `${orders.length}/${maxOrders}` : orders.length}
             </Text>
           </View>
         </View>
@@ -60,6 +66,8 @@ export default function OrderColumn({
               order={order}
               onToggleItem={onToggleItem}
               onMoveToNext={onMoveToNext}
+              onConfirmOrder={onConfirmOrder}
+              onMarkAsDelivered={onMarkAsDelivered}
             />
           ))
         )}

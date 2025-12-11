@@ -3,9 +3,10 @@ import { SafeAreaView, View, StatusBar } from 'react-native';
 import KitchenHeader from '@/components/kitchen/KitchenHeader';
 import OrderColumn from '@/components/kitchen/OrderColumn';
 import { useOrders } from '@/hooks/useOrders';
+import { MAX_PREPARING_ORDERS } from '@/constants/kitchen';
 
 export default function KitchenScreen() {
-  const { toggleItem, moveToNextStatus, getOrdersByStatus } = useOrders();
+  const { toggleItem, moveToNextStatus, confirmOrder, markAsDelivered, getOrdersByStatus } = useOrders();
 
   return (
     <SafeAreaView className="flex-1 bg-kitchen-bg">
@@ -32,6 +33,8 @@ export default function KitchenScreen() {
           orders={getOrdersByStatus('preparing')}
           onToggleItem={toggleItem}
           onMoveToNext={moveToNextStatus}
+          onConfirmOrder={confirmOrder}
+          maxOrders={MAX_PREPARING_ORDERS}
         />
 
         {/* Ready Column */}
@@ -41,6 +44,7 @@ export default function KitchenScreen() {
           orders={getOrdersByStatus('ready')}
           onToggleItem={toggleItem}
           onMoveToNext={moveToNextStatus}
+          onMarkAsDelivered={markAsDelivered}
         />
       </View>
     </SafeAreaView>
