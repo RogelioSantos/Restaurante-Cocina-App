@@ -128,15 +128,17 @@ export default function OrderCard({
         ))}
       </View>
 
-      {/* Action button */}
-      <TouchableOpacity
-        onPress={handleButtonPress}
-        className={`${getButtonColor()} p-4 items-center justify-center active:opacity-80`}
-      >
-        <Text className="text-white font-bold text-xl uppercase tracking-wider">
-          {getButtonText()}
-        </Text>
-      </TouchableOpacity>
+      {/* Action button - Only show for preparing and ready statuses */}
+      {order.status !== 'queue' && (
+        <TouchableOpacity
+          onPress={handleButtonPress}
+          className={`${getButtonColor()} p-4 items-center justify-center active:opacity-80`}
+        >
+          <Text className="text-white font-bold text-xl uppercase tracking-wider">
+            {getButtonText()}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
