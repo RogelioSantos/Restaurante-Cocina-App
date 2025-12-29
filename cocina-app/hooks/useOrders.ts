@@ -165,19 +165,15 @@ export function useOrders(category?: ItemCategory) {
   // Auto-move orders from queue to preparing when component mounts and when orders change
   // TODO: Backend - Sincronizar estado de pedidos en tiempo real
   useEffect(() => {
-    const ordersToCheck = category 
-      ? filterOrdersByCategory(orders, category)
-      : orders;
-
-    const preparingCount = ordersToCheck.filter(o => o.status === 'preparing').length;
-    const queueCount = ordersToCheck.filter(o => o.status === 'queue').length;
+    const preparingCount = filteredOrders.filter(o => o.status === 'preparing').length;
+    const queueCount = filteredOrders.filter(o => o.status === 'queue').length;
     
     // Only trigger if we have space and orders waiting, or if explicitly requested
     if ((preparingCount < MAX_PREPARING_ORDERS && queueCount > 0) || shouldAutoMove.current) {
       shouldAutoMove.current = false;
       autoMoveToPreparation();
     }
-  }, [orders.length, autoMoveToPreparation, category, filterOrdersByCategory, orders]);
+  }, [orders, autoMoveToPreparation, filteredOrders]);
 
   return {
     orders,
