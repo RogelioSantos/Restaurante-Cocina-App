@@ -3,10 +3,9 @@ import { SafeAreaView, View, StatusBar } from 'react-native';
 import KitchenHeader from '@/components/kitchen/KitchenHeader';
 import OrderColumn from '@/components/kitchen/OrderColumn';
 import { useOrders } from '@/hooks/useOrders';
-import { MAX_PREPARING_ORDERS } from '@/constants/kitchen';
 
-export default function KitchenScreen() {
-  const { toggleItem, moveToNextStatus, confirmOrder, markAsDelivered, getOrdersByStatus } = useOrders('food');
+export default function BarScreen() {
+  const { toggleItem, moveToNextStatus, confirmOrder, markAsDelivered, getOrdersByStatus } = useOrders('beverage');
 
   return (
     <SafeAreaView className="flex-1 bg-kitchen-bg">
@@ -15,17 +14,8 @@ export default function KitchenScreen() {
       {/* Header */}
       <KitchenHeader />
 
-      {/* Kanban Board - 3 Columns */}
-      <View className="flex-1 flex-row gap-2 p-2 px-4">
-        {/* Queue Column */}
-        <OrderColumn
-          title="En Cola"
-          status="queue"
-          orders={getOrdersByStatus('queue')}
-          onToggleItem={toggleItem}
-          onMoveToNext={moveToNextStatus}
-        />
-
+      {/* Kanban Board - 2 Columns (No Queue for Bar) */}
+      <View className="flex-1 flex-row gap-2 p-2 px-4 justify-center">
         {/* Preparing Column */}
         <OrderColumn
           title="En Preparación"
@@ -34,7 +24,6 @@ export default function KitchenScreen() {
           onToggleItem={toggleItem}
           onMoveToNext={moveToNextStatus}
           onConfirmOrder={confirmOrder}
-          maxOrders={MAX_PREPARING_ORDERS}
         />
 
         {/* Ready Column */}

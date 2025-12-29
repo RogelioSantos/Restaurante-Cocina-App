@@ -3,14 +3,29 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Order, OrderStatus } from '@/types/order';
+import { Order, OrderStatus, ItemCategory } from '@/types/order';
 import { mockOrders } from '@/data/mockOrders';
 import { MAX_PREPARING_ORDERS } from '@/constants/kitchen';
 import { Alert } from 'react-native';
 
-export function useOrders() {
+export function useOrders(category?: ItemCategory) {
   const [orders, setOrders] = useState<Order[]>(mockOrders);
   const shouldAutoMove = useRef(false);
+
+  // Filter orders by category
+  const filterOrdersByCategory = useCallback((orders: Order[], category: ItemCategory) => {
+    return orders
+      .map(order => ({
+        ...order,
+        items: order.items.filter(item => item.category === category)
+      }))
+      .filter(order => order.items.length > 0); // Only orders with items of that category
+  }, []);
+
+  // Get filtered orders if category is provided
+  const filteredOrders = category 
+    ? filterOrdersByCategory(orders, category)
+    : orders;
 
   // Toggle individual item completion status
   const toggleItem = useCallback((orderId: string, itemId: string) => {
@@ -39,8 +54,12 @@ export function useOrders() {
   // Auto-move oldest order from queue to preparing when space is available
   const autoMoveToPreparation = useCallback(() => {
     setOrders((prevOrders) => {
-      const preparingOrders = prevOrders.filter(o => o.status === 'preparing');
-      const queueOrders = prevOrders.filter(o => o.status === 'queue')
+      const ordersToCheck = category 
+        ? filterOrdersByCategory(prevOrders, category)
+        : prevOrders;
+
+      const preparingOrders = ordersToCheck.filter(o => o.status === 'preparing');
+      const queueOrders = ordersToCheck.filter(o => o.status === 'queue')
         .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 
       // Check if we have space and orders waiting
@@ -56,7 +75,7 @@ export function useOrders() {
 
       return prevOrders;
     });
-  }, []);
+  }, [category, filterOrdersByCategory]);
 
   // Confirm order from preparing - moves to ready if all items completed
   const confirmOrder = useCallback((orderId: string) => {
@@ -136,25 +155,29 @@ export function useOrders() {
   // Get orders by status
   const getOrdersByStatus = useCallback(
     (status: OrderStatus) => {
-      return orders
+      return filteredOrders
         .filter((order) => order.status === status)
         .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
     },
-    [orders]
+    [filteredOrders]
   );
 
   // Auto-move orders from queue to preparing when component mounts and when orders change
   // TODO: Backend - Sincronizar estado de pedidos en tiempo real
   useEffect(() => {
-    const preparingCount = orders.filter(o => o.status === 'preparing').length;
-    const queueCount = orders.filter(o => o.status === 'queue').length;
+    const ordersToCheck = category 
+      ? filterOrdersByCategory(orders, category)
+      : orders;
+
+    const preparingCount = ordersToCheck.filter(o => o.status === 'preparing').length;
+    const queueCount = ordersToCheck.filter(o => o.status === 'queue').length;
     
     // Only trigger if we have space and orders waiting, or if explicitly requested
     if ((preparingCount < MAX_PREPARING_ORDERS && queueCount > 0) || shouldAutoMove.current) {
       shouldAutoMove.current = false;
       autoMoveToPreparation();
     }
-  }, [orders.length, autoMoveToPreparation]);
+  }, [orders.length, autoMoveToPreparation, category, filterOrdersByCategory, orders]);
 
   return {
     orders,

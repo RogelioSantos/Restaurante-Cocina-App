@@ -4,6 +4,7 @@
 
 export type OrderStatus = 'queue' | 'preparing' | 'ready';
 export type OrderType = 'dine-in' | 'takeout';
+export type ItemCategory = 'food' | 'beverage';
 
 export interface OrderItem {
   id: string;
@@ -11,6 +12,7 @@ export interface OrderItem {
   name: string;
   modifiers?: string[];
   completed: boolean;
+  category: ItemCategory;
 }
 
 export interface Order {
