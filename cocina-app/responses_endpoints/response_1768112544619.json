@@ -1,0 +1,876 @@
+[
+  {
+    "ordenId": 350,
+    "numeroOrden": 1,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1145,
+        "producto": "Agua de Jamaica",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "Agregar servilletas",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Menos Azúcar"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:44:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T20:44:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 6
+  },
+  {
+    "ordenId": 350,
+    "numeroOrden": 1,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1146,
+        "producto": "Margarita",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido para messi",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Natural",
+          "Sin Sal"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:45:00+00:00"
+      },
+      {
+        "id": 1147,
+        "producto": "Margarita",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Usar envases ecológicos",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Natural",
+          "Sin Sal"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:45:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T20:45:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 6
+  },
+  {
+    "ordenId": 351,
+    "numeroOrden": 2,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1159,
+        "producto": "Agua de Jamaica",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido para evento",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Menos Azúcar",
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:52:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T20:52:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 27
+  },
+  {
+    "ordenId": 351,
+    "numeroOrden": 2,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1160,
+        "producto": "Jugo Verde",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "Pedido para evento",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:53:00+00:00"
+      },
+      {
+        "id": 1161,
+        "producto": "Jugo Verde",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido corporativo",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:53:00+00:00"
+      },
+      {
+        "id": 1162,
+        "producto": "Jugo Verde",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Cliente con poco tiempo",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:53:00+00:00"
+      },
+      {
+        "id": 1163,
+        "producto": "Jugo Verde",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido corporativo",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:53:00+00:00"
+      },
+      {
+        "id": 1164,
+        "producto": "Jugo Verde",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Revisar bien el pedido",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:53:00+00:00"
+      },
+      {
+        "id": 1165,
+        "producto": "Jugo Verde",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "No incluir popote",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:53:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T20:53:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 27
+  },
+  {
+    "ordenId": 352,
+    "numeroOrden": 3,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1166,
+        "producto": "Jugo Verde",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pedido para evento",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:55:00+00:00"
+      },
+      {
+        "id": 1167,
+        "producto": "Jugo Verde",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Sin prisa",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:55:00+00:00"
+      },
+      {
+        "id": 1168,
+        "producto": "Jugo Verde",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido con alta prioridad",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:55:00+00:00"
+      },
+      {
+        "id": 1169,
+        "producto": "Jugo Verde",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Usar envases ecológicos",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:55:00+00:00"
+      },
+      {
+        "id": 1170,
+        "producto": "Jugo Verde",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido especial",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:55:00+00:00"
+      },
+      {
+        "id": 1171,
+        "producto": "Jugo Verde",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Usar envases ecológicos",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:55:00+00:00"
+      },
+      {
+        "id": 1172,
+        "producto": "Jugo Verde",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "No incluir cubiertos",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:55:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T20:55:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 25
+  },
+  {
+    "ordenId": 353,
+    "numeroOrden": 4,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1180,
+        "producto": "Agua de Horchata",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Cliente frecuente",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo",
+          "Menos Azúcar"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:59:00+00:00"
+      },
+      {
+        "id": 1181,
+        "producto": "Agua de Horchata",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Favor de confirmar disponibilidad",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo",
+          "Menos Azúcar"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T20:59:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T20:59:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 13
+  },
+  {
+    "ordenId": 354,
+    "numeroOrden": 5,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1194,
+        "producto": "Jugo de Naranja",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Agregar servilletas",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Natural"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T21:03:00+00:00"
+      },
+      {
+        "id": 1195,
+        "producto": "Jugo de Naranja",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pedido para compartir",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Natural"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T21:03:00+00:00"
+      },
+      {
+        "id": 1196,
+        "producto": "Jugo de Naranja",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Favor de confirmar disponibilidad",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Natural"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T21:03:00+00:00"
+      },
+      {
+        "id": 1197,
+        "producto": "Jugo de Naranja",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pedido personal",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Natural"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T21:03:00+00:00"
+      },
+      {
+        "id": 1198,
+        "producto": "Jugo de Naranja",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido grande",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Natural"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T21:03:00+00:00"
+      },
+      {
+        "id": 1199,
+        "producto": "Jugo de Naranja",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "No incluir cubiertos",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Natural"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T21:03:00+00:00"
+      },
+      {
+        "id": 1200,
+        "producto": "Jugo de Naranja",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Revisar bien el pedido",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Natural"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T21:03:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T21:03:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 18
+  },
+  {
+    "ordenId": 358,
+    "numeroOrden": 8,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1207,
+        "producto": "Modelo Especial",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido especial",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:03:00+00:00"
+      },
+      {
+        "id": 1208,
+        "producto": "Modelo Especial",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "No incluir popote",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:03:00+00:00"
+      },
+      {
+        "id": 1209,
+        "producto": "Modelo Especial",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pedido para messi",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:03:00+00:00"
+      },
+      {
+        "id": 1210,
+        "producto": "Modelo Especial",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Agregar servilletas",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:03:00+00:00"
+      },
+      {
+        "id": 1211,
+        "producto": "Modelo Especial",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Revisar bien el pedido",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:03:00+00:00"
+      },
+      {
+        "id": 1212,
+        "producto": "Modelo Especial",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido para compartir",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:03:00+00:00"
+      },
+      {
+        "id": 1213,
+        "producto": "Modelo Especial",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pedido especial",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:03:00+00:00"
+      },
+      {
+        "id": 1214,
+        "producto": "Modelo Especial",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "Seguir indicaciones del cliente",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:03:00+00:00"
+      },
+      {
+        "id": 1215,
+        "producto": "Modelo Especial",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pedido grande",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:03:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T22:03:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 16
+  },
+  {
+    "ordenId": 358,
+    "numeroOrden": 8,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1216,
+        "producto": "Margarita",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Favor de confirmar disponibilidad",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Sal",
+          "Frozen"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:04:00+00:00"
+      },
+      {
+        "id": 1217,
+        "producto": "Margarita",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "Pedido personal",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Sal",
+          "Frozen"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:04:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T22:04:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 16
+  },
+  {
+    "ordenId": 359,
+    "numeroOrden": 9,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1218,
+        "producto": "Sprite",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Seguir indicaciones del cliente",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:06:00+00:00"
+      },
+      {
+        "id": 1219,
+        "producto": "Sprite",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "Pedido corporativo",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:06:00+00:00"
+      },
+      {
+        "id": 1220,
+        "producto": "Sprite",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pedido especial",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:06:00+00:00"
+      },
+      {
+        "id": 1221,
+        "producto": "Sprite",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido especial",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:06:00+00:00"
+      },
+      {
+        "id": 1222,
+        "producto": "Sprite",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "No incluir cubiertos",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:06:00+00:00"
+      },
+      {
+        "id": 1223,
+        "producto": "Sprite",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido con alta prioridad",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:06:00+00:00"
+      },
+      {
+        "id": 1224,
+        "producto": "Sprite",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Usar envases ecológicos",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:06:00+00:00"
+      },
+      {
+        "id": 1225,
+        "producto": "Sprite",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Cliente con poco tiempo",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:06:00+00:00"
+      },
+      {
+        "id": 1226,
+        "producto": "Sprite",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pedido para compartir",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:06:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T22:06:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 31
+  },
+  {
+    "ordenId": 361,
+    "numeroOrden": 11,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1241,
+        "producto": "Modelo Especial",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Revisar bien el pedido",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:12:00+00:00"
+      },
+      {
+        "id": 1242,
+        "producto": "Modelo Especial",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pocas servilletas",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:12:00+00:00"
+      },
+      {
+        "id": 1243,
+        "producto": "Modelo Especial",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido para messi",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:12:00+00:00"
+      },
+      {
+        "id": 1244,
+        "producto": "Modelo Especial",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pedido personal",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:12:00+00:00"
+      },
+      {
+        "id": 1245,
+        "producto": "Modelo Especial",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Sin prisa",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:12:00+00:00"
+      },
+      {
+        "id": 1246,
+        "producto": "Modelo Especial",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pedido especial",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:12:00+00:00"
+      },
+      {
+        "id": 1247,
+        "producto": "Modelo Especial",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "Pocas servilletas",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:12:00+00:00"
+      },
+      {
+        "id": 1248,
+        "producto": "Modelo Especial",
+        "cantidad": 3,
+        "estado": "Solicitado",
+        "comentario": "No incluir cubiertos",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:12:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T22:12:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 8
+  },
+  {
+    "ordenId": 362,
+    "numeroOrden": 12,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1256,
+        "producto": "Modelo Especial",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "Pedido para compartir",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:15:00+00:00"
+      },
+      {
+        "id": 1257,
+        "producto": "Modelo Especial",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Pedido para compartir",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-09T22:15:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T22:15:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 24
+  },
+  {
+    "ordenId": 362,
+    "numeroOrden": 12,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1265,
+        "producto": "Agua de Horchata",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "Pedido con alta prioridad",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:17:00+00:00"
+      },
+      {
+        "id": 1266,
+        "producto": "Agua de Horchata",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "Seguir indicaciones del cliente",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:17:00+00:00"
+      },
+      {
+        "id": 1267,
+        "producto": "Agua de Horchata",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "No incluir popote",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:17:00+00:00"
+      },
+      {
+        "id": 1268,
+        "producto": "Agua de Horchata",
+        "cantidad": 2,
+        "estado": "Solicitado",
+        "comentario": "Pedido para messi",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:17:00+00:00"
+      },
+      {
+        "id": 1269,
+        "producto": "Agua de Horchata",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "Agregar servilletas",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo"
+        ],
+        "fechaHoraInicioEstado": "2026-01-09T22:17:00+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-09T22:17:00+00:00",
+    "estado": "Solicitado",
+    "mesaId": 24
+  },
+  {
+    "ordenId": 389,
+    "numeroOrden": 30,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1306,
+        "producto": "Agua de Horchata",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "nota para usuario barra",
+        "complementosProducto": [],
+        "exclusionesProducto": [
+          "Sin Hielo",
+          "Menos Azúcar"
+        ],
+        "fechaHoraInicioEstado": "2026-01-11T03:20:45.890403+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-11T03:20:45.890403+00:00",
+    "estado": "Solicitado",
+    "mesaId": 10
+  },
+  {
+    "ordenId": 389,
+    "numeroOrden": 30,
+    "tipoOrden": "Comer Aquí",
+    "detallesOrden": [
+      {
+        "id": 1307,
+        "producto": "Modelo Especial",
+        "cantidad": 1,
+        "estado": "Solicitado",
+        "comentario": "que pegue bien macizo",
+        "complementosProducto": [],
+        "exclusionesProducto": [],
+        "fechaHoraInicioEstado": "2026-01-11T03:21:08.273817+00:00"
+      }
+    ],
+    "fechaHora": "2026-01-11T03:21:08.273817+00:00",
+    "estado": "Solicitado",
+    "mesaId": 10
+  }
+]

@@ -3,7 +3,7 @@
     "name": "cocina-app",
     "slug": "cocina-app",
     "version": "1.0.0",
-    "orientation": "default",
+    "orientation": "landscape",
     "icon": "./assets/images/icon.png",
     "scheme": "cocinaapp",
     "userInterfaceStyle": "automatic",

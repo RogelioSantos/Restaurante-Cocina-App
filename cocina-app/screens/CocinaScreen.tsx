@@ -1,43 +1,45 @@
 import React from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
   ActivityIndicator,
-  RefreshControl,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
-import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
-import useOrders, { Order, OrderStatus } from "../hooks/useOrders";
+import { useTheme } from "../context/ThemeContext";
+import { Order } from "../hooks/useOrders";
+// Usa el hook de WebSocket para actualizaciones en tiempo real
+import { ordersApi } from "../api/ordersApi";
+import useOrdersSocket from "../hooks/useOrdersSocket";
 
-const BarraScreen: React.FC = () => {
+const CocinaScreen: React.FC = () => {
   const { colors } = useTheme();
   const { signOut, user } = useAuth();
-  const {
+
+  const { 
     queueOrders,
     preparingOrders,
     readyOrders,
     isLoading,
     error,
     refetch,
-    updateOrderStatus,
-  } = useOrders({ tipoCategoria: "Bebidas" });
+  } = useOrdersSocket();
+  const { token } = useAuth();
+  const [loadingOrderId, setLoadingOrderId] = React.useState<number | null>(null);
 
-  const [refreshing, setRefreshing] = React.useState(false);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  };
-
-  const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
+  // Reactivar acciones: PATCH al backend y esperar evento por WebSocket
+  const handleStatusChange = async (order: Order, newStatus: "preparing" | "ready") => {
+    if (!token) return;
+    setLoadingOrderId(order.id);
     try {
-      await updateOrderStatus(orderId, newStatus);
+      await ordersApi.updateOrderDetailStatus(token, order.ordenId, [order.id], newStatus === "preparing" ? "EnPreparacion" : "ListoParaEntregar");
     } catch (err) {
-      console.error("Error updating status:", err);
+      // Puedes mostrar un toast de error aquí si quieres
+      console.error(err);
+    } finally {
+      setLoadingOrderId(null);
     }
   };
 
@@ -53,18 +55,20 @@ const BarraScreen: React.FC = () => {
       <View style={styles.buttonContainer}>
         {item.status === "queue" && (
           <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: colors.warning || "#F59E0B" }]}
-            onPress={() => handleStatusChange(item.id, "preparing")}
+            style={[styles.actionButton, { backgroundColor: colors.warning || "#F59E0B" }, loadingOrderId === item.id && { opacity: 0.5 }]}
+            onPress={() => handleStatusChange(item, "preparing")}
+            disabled={loadingOrderId === item.id}
           >
-            <Text style={styles.buttonText}>Iniciar Preparación</Text>
+            <Text style={styles.buttonText}>{loadingOrderId === item.id ? "Enviando..." : "Iniciar Preparación"}</Text>
           </TouchableOpacity>
         )}
         {item.status === "preparing" && (
           <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: colors.success || "#10B981" }]}
-            onPress={() => handleStatusChange(item.id, "ready")}
+            style={[styles.actionButton, { backgroundColor: colors.success || "#10B981" }, loadingOrderId === item.id && { opacity: 0.5 }]}
+            onPress={() => handleStatusChange(item, "ready")}
+            disabled={loadingOrderId === item.id}
           >
-            <Text style={styles.buttonText}>Marcar como Listo</Text>
+            <Text style={styles.buttonText}>{loadingOrderId === item.id ? "Enviando..." : "Marcar como Listo"}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -123,9 +127,9 @@ const BarraScreen: React.FC = () => {
       <View
         style={styles.columnsContainer}
       >
-        {renderColumn("En Cola", queueOrders, "#8B5CF6")}
-        {renderColumn("En Preparación", preparingOrders, "#EC4899")}
-        {renderColumn("Listos", readyOrders, "#06B6D4")}
+        {renderColumn("En Cola", queueOrders, "#3B82F6")}
+        {renderColumn("En Preparación", preparingOrders, "#F59E0B")}
+        {renderColumn("Listos", readyOrders, "#10B981")}
       </View>
     </View>
   );
@@ -250,4 +254,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BarraScreen;
+export default CocinaScreen;

@@ -1,20 +1,21 @@
 import React from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
   ActivityIndicator,
-  RefreshControl,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
-import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
-import useOrders, { Order, OrderStatus } from "../hooks/useOrders";
+import { useTheme } from "../context/ThemeContext";
+import { Order } from "../hooks/useOrders";
+import useOrdersSocket from "../hooks/useOrdersSocket";
 
-const CocinaScreen: React.FC = () => {
+const BarraScreen: React.FC = () => {
   const { colors } = useTheme();
   const { signOut, user } = useAuth();
+  // Usa el hook de WebSocket para actualizaciones en tiempo real
   const {
     queueOrders,
     preparingOrders,
@@ -22,24 +23,12 @@ const CocinaScreen: React.FC = () => {
     isLoading,
     error,
     refetch,
-    updateOrderStatus,
-  } = useOrders({ tipoCategoria: "Alimentos" });
+  } = useOrdersSocket();
 
-  const [refreshing, setRefreshing] = React.useState(false);
+  // Acciones de polling eliminadas. Solo WebSocket.
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  };
-
-  const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
-    try {
-      await updateOrderStatus(orderId, newStatus);
-    } catch (err) {
-      console.error("Error updating status:", err);
-    }
-  };
+  // El WebSocket solo actualiza en tiempo real, no hay updateOrderStatus aquí
+  // Si necesitas actualizar el estado, deberás hacerlo vía backend y esperar el evento del socket
 
   const renderOrderItem = ({ item }: { item: Order }) => (
     <View style={[styles.orderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -51,22 +40,7 @@ const CocinaScreen: React.FC = () => {
         {new Date(item.fechaHora).toLocaleTimeString()}
       </Text>
       <View style={styles.buttonContainer}>
-        {item.status === "queue" && (
-          <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: colors.warning || "#F59E0B" }]}
-            onPress={() => handleStatusChange(item.id, "preparing")}
-          >
-            <Text style={styles.buttonText}>Iniciar Preparación</Text>
-          </TouchableOpacity>
-        )}
-        {item.status === "preparing" && (
-          <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: colors.success || "#10B981" }]}
-            onPress={() => handleStatusChange(item.id, "ready")}
-          >
-            <Text style={styles.buttonText}>Marcar como Listo</Text>
-          </TouchableOpacity>
-        )}
+        {/* Acciones deshabilitadas en modo WebSocket. Actualización solo por backend. */}
       </View>
     </View>
   );
@@ -123,9 +97,9 @@ const CocinaScreen: React.FC = () => {
       <View
         style={styles.columnsContainer}
       >
-        {renderColumn("En Cola", queueOrders, "#3B82F6")}
-        {renderColumn("En Preparación", preparingOrders, "#F59E0B")}
-        {renderColumn("Listos", readyOrders, "#10B981")}
+        {renderColumn("En Cola", queueOrders, "#8B5CF6")}
+        {renderColumn("En Preparación", preparingOrders, "#EC4899")}
+        {renderColumn("Listos", readyOrders, "#06B6D4")}
       </View>
     </View>
   );
@@ -250,4 +224,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CocinaScreen;
+export default BarraScreen;
