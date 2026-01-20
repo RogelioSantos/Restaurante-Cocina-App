@@ -1,167 +1,277 @@
-/**
- * useOrders hook - Manages order state and transitions between statuses
- */
+import { useCallback, useEffect, useRef, useState } from "react";
+import { OrderDetail, ordersApi } from "../api/ordersApi";
+import { POLLING_INTERVAL } from "../constants/api";
+import { useAuth } from "../context/AuthContext";
 
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { Order, OrderStatus } from '@/types/order';
-import { mockOrders } from '@/data/mockOrders';
-import { MAX_PREPARING_ORDERS } from '@/constants/kitchen';
-import { Alert } from 'react-native';
+export type OrderStatus = "queue" | "preparing" | "ready";
 
-export function useOrders() {
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
-  const shouldAutoMove = useRef(false);
+export interface Order {
+  id:  number;
+  ordenId: number;
+  producto: string;
+  cantidad: number;
+  status: OrderStatus;
+  fechaHora: string;
+  comentario: string | null;
+  complementos: string[];
+  exclusiones: string[];
+  fechaHoraInicioEstado: string | null;
+  mesaId: number;
+  numeroOrden?: number;
+  tipoOrden?: string;
+}
 
-  // Toggle individual item completion status
-  const toggleItem = useCallback((orderId: string, itemId: string) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) => {
-        if (order.id !== orderId) return order;
+interface UseOrdersReturn {
+  orders: Order[];
+  queueOrders: Order[];
+  preparingOrders: Order[];
+  readyOrders: Order[];
+  isLoading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+  updateOrderStatus: (orderId: number, orderDetailId: number, newStatus: string) => Promise<void>;
+  cancelOrder: (orderDetailId: number) => Promise<void>;
+}
 
-        return {
-          ...order,
-          items: order.items.map((item) =>
-            item.id === itemId
-              ? { ...item, completed: !item.completed }
-              : item
-          ),
-          updatedAt: new Date(),
-        };
-      })
-    );
+const mapApiStatusToAppStatus = (apiStatus:  string): OrderStatus | null => {
+  const normalizedStatus = apiStatus.toLowerCase().trim();
+
+  if (normalizedStatus === "solicitado") {
+    return "queue";
+  }
+  if (
+    normalizedStatus === "en preparación" ||
+    normalizedStatus === "en preparacion" ||
+    normalizedStatus === "enpreparacion"
+  ) {
+    return "preparing";
+  }
+  if (
+    normalizedStatus === "listo para entregar" ||
+    normalizedStatus === "listoparaentregar"
+  ) {
+    return "ready";
+  }
+  if (normalizedStatus === "entregado" || normalizedStatus === "cancelado") {
+    return null;
+  }
+
+  console.warn("Estado no reconocido:", apiStatus);
+  return null;
+};
+
+const mapAppStatusToApiStatus = (appStatus: string): string => {
+  const statusMap:  Record<string, string> = {
+    queue: "Solicitado",
+    preparing: "EnPreparacion",
+    ready:  "ListoParaEntregar",
+    delivered: "Entregado",
+  };
+  return statusMap[appStatus] || appStatus;
+};
+
+// Recibe el objeto de detalle y el objeto de orden completo para extraer los campos globales
+const transformOrderDetail = (detail: OrderDetail, parentOrder?: any): Order | null => {
+  const status = mapApiStatusToAppStatus(detail.estado);
+  if (status === null) return null;
+
+  return {
+    id: detail.id,
+    ordenId: detail.ordenId,
+    producto: detail.producto,
+    cantidad: detail.cantidad,
+    status,
+    fechaHora: detail.fechaHora,
+    comentario: detail.comentario,
+    complementos: detail.complementos || [],
+    exclusiones: detail.exclusiones || [],
+    fechaHoraInicioEstado: detail.fechaHoraInicioEstado,
+    mesaId: detail.mesaId,
+    numeroOrden: parentOrder?.numeroOrden,
+    tipoOrden: parentOrder?.tipoOrden,
+  };
+};
+
+export const useOrders = (): UseOrdersReturn => {
+  const { token, refreshAuthToken, isAuthenticated } = useAuth();
+
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Sistema de bloqueo temporal para evitar que el polling revierta cambios
+  const recentlyModifiedIds = useRef<Set<number>>(new Set());
+  const modificationTimers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+
+  // Marcar orden como modificada (ignorar polling por 10 segundos)
+  const markAsModified = useCallback((orderId: number) => {
+    recentlyModifiedIds.current. add(orderId);
+
+    // Limpiar timer anterior si existe
+    const existingTimer = modificationTimers.current.get(orderId);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+    }
+
+    // Remover después de 10 segundos (2 ciclos de polling de 5s)
+    const timer = setTimeout(() => {
+      recentlyModifiedIds.current.delete(orderId);
+      modificationTimers.current.delete(orderId);
+    }, 10000);
+
+    modificationTimers.current. set(orderId, timer);
   }, []);
 
-  // Check if all items in an order are completed
-  const areAllItemsCompleted = useCallback((order: Order) => {
-    return order.items.every(item => item.completed);
-  }, []);
+  const fetchOrders = useCallback(async () => {
+    if (!token || !isAuthenticated) {
+      setOrders([]);
+      setIsLoading(false);
+      return;
+    }
 
-  // Auto-move oldest order from queue to preparing when space is available
-  const autoMoveToPreparation = useCallback(() => {
-    setOrders((prevOrders) => {
-      const preparingOrders = prevOrders.filter(o => o.status === 'preparing');
-      const queueOrders = prevOrders.filter(o => o.status === 'queue')
-        .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+    try {
+      setError(null);
+      const orderDetails = await ordersApi.getOrderDetails(token);
 
-      // Check if we have space and orders waiting
-      if (preparingOrders.length < MAX_PREPARING_ORDERS && queueOrders.length > 0) {
-        const oldestQueueOrder = queueOrders[0];
-        // TODO: Backend - Recibir nuevos pedidos via WebSocket/API
-        return prevOrders.map(o =>
-          o.id === oldestQueueOrder.id
-            ? { ...o, status: 'preparing' as OrderStatus, updatedAt: new Date() }
-            : o
-        );
-      }
+      // orderDetails es un array plano, pero necesitamos los datos globales de la orden
+      // Por lo tanto, mejor obtener los datos desde el mapeo en api/ordersApi.ts
+      // Si no, aquí no se puede arreglar. Si orderDetails no tiene los campos, hay que arreglar el mapeo en api/ordersApi.ts
+      // Por compatibilidad, intentamos mapear si los campos existen
+      const transformed = orderDetails
+        .map((detail: any) => transformOrderDetail(detail, detail))
+        .filter((order): order is Order => order !== null);
 
-      return prevOrders;
-    });
-  }, []);
+      // Aplicar filtro de órdenes modificadas recientemente
+      setOrders((prevOrders) => {
+        const modifiedIds = recentlyModifiedIds.current;
 
-  // Confirm order from preparing - moves to ready if all items completed
-  const confirmOrder = useCallback((orderId: string) => {
-    setOrders((prevOrders) => {
-      const order = prevOrders.find(o => o.id === orderId);
-      if (!order) return prevOrders;
-
-      if (!areAllItemsCompleted(order)) {
-        Alert.alert(
-          'Items pendientes',
-          'Debes marcar todos los items como completados antes de confirmar el pedido.'
-        );
-        return prevOrders;
-      }
-
-      // All items completed - move to ready and show notification
-      // TODO: Backend - Enviar notificación al mesero cuando items están listos
-      Alert.alert(
-        'Notificación enviada',
-        'Se ha notificado al mesero que el pedido está listo para recoger.'
-      );
-
-      // Mark that we should auto-move on next render
-      shouldAutoMove.current = true;
-      
-      return prevOrders.map(o =>
-        o.id === orderId
-          ? { ...o, status: 'ready' as OrderStatus, updatedAt: new Date() }
-          : o
-      );
-    });
-  }, [areAllItemsCompleted]);
-
-  // Mark order as delivered (simulates waiter confirmation)
-  const markAsDelivered = useCallback((orderId: string) => {
-    // TODO: Backend - Confirmar entrega del pedido
-    Alert.alert(
-      'Pedido entregado',
-      'El pedido ha sido marcado como entregado. Notificando al sistema...'
-    );
-
-    setOrders((prevOrders) => {
-      // Mark that we should auto-move on next render
-      shouldAutoMove.current = true;
-      return prevOrders.filter(o => o.id !== orderId);
-    });
-  }, []);
-
-  // Move order to next status (for queue orders only now)
-  const moveToNextStatus = useCallback((orderId: string) => {
-    setOrders((prevOrders) => {
-      const order = prevOrders.find((o) => o.id === orderId);
-      if (!order) return prevOrders;
-
-      // Queue orders can be manually moved to preparing if space available
-      if (order.status === 'queue') {
-        const preparingOrders = prevOrders.filter(o => o.status === 'preparing');
-        if (preparingOrders.length >= MAX_PREPARING_ORDERS) {
-          Alert.alert(
-            'Límite alcanzado',
-            `No se pueden tener más de ${MAX_PREPARING_ORDERS} pedidos en preparación simultáneamente.`
-          );
-          return prevOrders;
+        // Si no hay modificaciones recientes, usar datos del servidor directamente
+        if (modifiedIds.size === 0) {
+          return transformed;
         }
 
-        return prevOrders.map((o) =>
-          o.id === orderId
-            ? { ...o, status: 'preparing' as OrderStatus, updatedAt: new Date() }
-            : o
+        // Mantener el estado local de las órdenes modificadas recientemente
+        const serverOrdersFiltered = transformed.filter(
+          (order) => ! modifiedIds.has(order. id)
         );
+        const localModifiedOrders = prevOrders. filter(
+          (order) => modifiedIds.has(order.id)
+        );
+
+        return [...serverOrdersFiltered, ... localModifiedOrders];
+      });
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+
+      if (err instanceof Error && err. message.includes("401")) {
+        const refreshed = await refreshAuthToken();
+        if (refreshed) {
+          await fetchOrders();
+          return;
+        }
       }
 
-      return prevOrders;
-    });
-  }, []);
+      setError(err instanceof Error ? err.message :  "Error al obtener órdenes");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [token, isAuthenticated, refreshAuthToken]);
 
-  // Get orders by status
-  const getOrdersByStatus = useCallback(
-    (status: OrderStatus) => {
-      return orders
-        .filter((order) => order.status === status)
-        .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  const updateOrderStatus = useCallback(
+    async (ordenId: number, orderDetailId:  number, newStatus: string) => {
+      if (!token) {
+        throw new Error("No hay token de autenticación");
+      }
+
+      // Marcar como modificada ANTES de hacer cambios
+      markAsModified(orderDetailId);
+
+      // Actualización optimista inmediata
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === orderDetailId ?  { ...order, status: newStatus as OrderStatus } : order
+        )
+      );
+
+      try {
+        const apiStatus = mapAppStatusToApiStatus(newStatus);
+        await ordersApi. updateOrderDetailStatus(token, ordenId, [orderDetailId], apiStatus);
+      } catch (err) {
+        console.error("Error updating order status:", err);
+        // Quitar de modificados para que el polling corrija
+        recentlyModifiedIds.current. delete(orderDetailId);
+        await fetchOrders();
+        throw err;
+      }
     },
-    [orders]
+    [token, fetchOrders, markAsModified]
   );
 
-  // Auto-move orders from queue to preparing when component mounts and when orders change
-  // TODO: Backend - Sincronizar estado de pedidos en tiempo real
+  const cancelOrder = useCallback(
+    async (orderDetailId: number) => {
+      if (!token) {
+        throw new Error("No hay token de autenticación");
+      }
+
+      // Marcar como modificada
+      markAsModified(orderDetailId);
+
+      // Remover la orden de la lista local inmediatamente
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order.id !== orderDetailId)
+      );
+
+      try {
+        await ordersApi.cancelOrderDetail(token, orderDetailId);
+      } catch (err) {
+        console.error("Error canceling order:", err);
+        // Quitar de modificados para que el polling corrija
+        recentlyModifiedIds.current.delete(orderDetailId);
+        await fetchOrders();
+        throw err;
+      }
+    },
+    [token, fetchOrders, markAsModified]
+  );
+
+  // Carga inicial
   useEffect(() => {
-    const preparingCount = orders.filter(o => o.status === 'preparing').length;
-    const queueCount = orders.filter(o => o.status === 'queue').length;
-    
-    // Only trigger if we have space and orders waiting, or if explicitly requested
-    if ((preparingCount < MAX_PREPARING_ORDERS && queueCount > 0) || shouldAutoMove.current) {
-      shouldAutoMove.current = false;
-      autoMoveToPreparation();
-    }
-  }, [orders.length, autoMoveToPreparation]);
+    fetchOrders();
+  }, [fetchOrders]);
+
+  // Polling
+  useEffect(() => {
+    if (! isAuthenticated) return;
+
+    const intervalId = setInterval(() => {
+      fetchOrders();
+    }, POLLING_INTERVAL);
+
+    return () => clearInterval(intervalId);
+  }, [isAuthenticated, fetchOrders]);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      modificationTimers.current.forEach((timer) => clearTimeout(timer));
+    };
+  }, []);
+
+  const queueOrders = orders.filter((order) => order.status === "queue");
+  const preparingOrders = orders. filter((order) => order.status === "preparing");
+  const readyOrders = orders.filter((order) => order.status === "ready");
 
   return {
     orders,
-    toggleItem,
-    moveToNextStatus,
-    confirmOrder,
-    markAsDelivered,
-    getOrdersByStatus,
+    queueOrders,
+    preparingOrders,
+    readyOrders,
+    isLoading,
+    error,
+    refetch: fetchOrders,
+    updateOrderStatus,
+    cancelOrder,
   };
-}
+};
+
+export default useOrders;

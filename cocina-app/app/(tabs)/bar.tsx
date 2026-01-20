@@ -2,17 +2,15 @@ import { ordersApi } from '@/api/ordersApi';
 import KitchenHeader from '@/components/kitchen/KitchenHeader';
 import OrderColumn from '@/components/kitchen/OrderColumn';
 import Toast from '@/components/ui/Toast';
-import { MAX_PREPARING_ORDERS } from '@/constants/kitchen';
 import { useAuth } from '@/context/AuthContext';
 import useOrdersSocket from '@/hooks/useOrdersSocket';
 import { useToast } from '@/hooks/useToast';
 import React from 'react';
 import { ActivityIndicator, SafeAreaView, StatusBar, Text, View } from 'react-native';
 
-export default function KitchenScreen() {
+export default function BarScreen() {
   const {
     orders,
-    queueOrders,
     preparingOrders,
     readyOrders,
     isLoading,
@@ -22,22 +20,16 @@ export default function KitchenScreen() {
 
   const { toast, showToast, hideToast } = useToast();
 
-  // (Ya declarado arriba, eliminar duplicado)
-  // (Ya declarado arriba, eliminar duplicado)
-
-  // Acciones manuales reactivadas: PATCH al backend y feedback visual
+  // Acciones para mover órdenes y cancelar
   const { token } = useAuth();
   const [loadingOrderId, setLoadingOrderId] = React.useState<number | null>(null);
-  const [optimisticUpdates, setOptimisticUpdates] = React.useState<Map<number, 'queue' | 'preparing' | 'ready'>>(new Map());
+  const [optimisticUpdates, setOptimisticUpdates] = React.useState<Map<number, 'queue' | 'ready'>>(new Map());
   const [canceledOrders, setCanceledOrders] = React.useState<Set<number>>(new Set());
-  // TODO: Sistema de movimiento automático (comentado por ahora, puede ser útil en el futuro)
-  // const [isAutoMoving, setIsAutoMoving] = React.useState(false);
-  // const processingRef = React.useRef(false);
-  
+
   // Calcular órdenes actuales con actualizaciones optimistas aplicadas
   const currentOrders = React.useMemo(() => {
     let result = orders;
-    
+
     // Aplicar actualizaciones optimistas de estado
     if (optimisticUpdates.size > 0) {
       result = result.map((order) => {
@@ -48,12 +40,12 @@ export default function KitchenScreen() {
         return order;
       });
     }
-    
+
     // Filtrar órdenes canceladas (actualización optimista)
     if (canceledOrders.size > 0) {
       result = result.filter((order) => !canceledOrders.has(order.id));
     }
-    
+
     return result;
   }, [orders, optimisticUpdates, canceledOrders]);
 
@@ -67,20 +59,18 @@ export default function KitchenScreen() {
     });
   }, [currentOrders]);
 
-  const currentPreparingOrders = currentOrders.filter((o) => o.status === 'preparing');
   const currentReadyOrders = currentOrders.filter((o) => o.status === 'ready');
-  const canMoveToPreparing = currentPreparingOrders.length < MAX_PREPARING_ORDERS;
 
   // Limpiar actualizaciones optimistas cuando el WebSocket confirma el cambio
   React.useEffect(() => {
     if (optimisticUpdates.size === 0 && canceledOrders.size === 0) return;
-    
+
     // Limpiar actualizaciones optimistas de estado
     if (optimisticUpdates.size > 0) {
       setOptimisticUpdates((prev) => {
         const newMap = new Map(prev);
         let hasChanges = false;
-        
+
         prev.forEach((expectedStatus, orderId) => {
           const backendOrder = orders.find((o) => o.id === orderId);
           // Si la orden en el backend ya tiene el estado esperado, limpiar la actualización optimista
@@ -89,17 +79,17 @@ export default function KitchenScreen() {
             hasChanges = true;
           }
         });
-        
+
         return hasChanges ? newMap : prev;
       });
     }
-    
+
     // Limpiar órdenes canceladas optimistas cuando el WebSocket confirma la eliminación
     if (canceledOrders.size > 0) {
       setCanceledOrders((prev) => {
         const newSet = new Set(prev);
         let hasChanges = false;
-        
+
         prev.forEach((orderId) => {
           // Si la orden ya no está en el array del backend, significa que fue eliminada/cancelada
           const backendOrder = orders.find((o) => o.id === orderId);
@@ -108,117 +98,28 @@ export default function KitchenScreen() {
             hasChanges = true;
           }
         });
-        
+
         return hasChanges ? newSet : prev;
       });
     }
   }, [orders, canceledOrders]);
 
-  // TODO: Sistema de movimiento automático (comentado por ahora, puede ser útil en el futuro)
-  // Función para mover automáticamente las órdenes más antiguas de cola a preparación
-  // const autoMoveOldestOrders = React.useCallback(async () => {
-  //   if (!token || processingRef.current || isAutoMoving) return;
-  //   
-  //   const availableSpace = MAX_PREPARING_ORDERS - currentPreparingOrders.length;
-  //   if (availableSpace <= 0 || currentQueueOrders.length === 0) return;
-
-  //   // Calcular cuántas órdenes mover (no más del espacio disponible)
-  //   const ordersToMove = Math.min(availableSpace, currentQueueOrders.length);
-  //   const oldestOrders = currentQueueOrders.slice(0, ordersToMove);
-
-  //   if (oldestOrders.length === 0) return;
-
-  //   processingRef.current = true;
-  //   setIsAutoMoving(true);
-
-  //   try {
-  //     // Mover todas las órdenes en paralelo
-  //     await Promise.all(
-  //       oldestOrders.map(async (order) => {
-  //         try {
-  //           // Actualización optimista
-  //           setOptimisticUpdates((prev) => new Map(prev).set(order.id, 'preparing'));
-  //           // Actualizar en backend
-  //           await ordersApi.updateOrderDetailStatus(token, order.ordenId, [order.id], 'EnPreparacion');
-  //         } catch (err) {
-  //           console.error(`Error moviendo orden ${order.id} automáticamente:`, err);
-  //           // Revertir actualización optimista en caso de error
-  //           setOptimisticUpdates((prev) => {
-  //             const newMap = new Map(prev);
-  //             newMap.delete(order.id);
-  //             return newMap;
-  //           });
-  //         }
-  //       })
-  //     );
-  //   } finally {
-  //     processingRef.current = false;
-  //     setIsAutoMoving(false);
-  //   }
-  // }, [token, currentPreparingOrders.length, currentQueueOrders, isAutoMoving]);
-
-  // Efecto para mover automáticamente cuando hay espacio disponible
-  // React.useEffect(() => {
-  //   // Solo mover automáticamente si:
-  //   // 1. No hay actualizaciones optimistas pendientes (para evitar conflictos)
-  //   // 2. Hay espacio disponible
-  //   // 3. Hay órdenes en cola
-  //   // 4. No se está procesando ya
-  //   if (
-  //     optimisticUpdates.size === 0 &&
-  //     canMoveToPreparing &&
-  //     currentQueueOrders.length > 0 &&
-  //     !processingRef.current &&
-  //     !isAutoMoving
-  //   ) {
-  //     // Pequeño delay para evitar ejecutar inmediatamente después de cada cambio
-  //     const timer = setTimeout(() => {
-  //       autoMoveOldestOrders();
-  //     }, 500); // 500ms de delay
-
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [canMoveToPreparing, currentQueueOrders.length, optimisticUpdates.size, autoMoveOldestOrders, isAutoMoving]);
-
-  const moveToNextStatus = async (orderId: number, currentStatus: string) => {
-    const order = [...currentQueueOrders, ...currentPreparingOrders, ...currentReadyOrders].find(o => o.id === orderId);
-    if (!order || !token) return;
-    if (currentStatus === 'queue' && !canMoveToPreparing) {
-      showToast(`Límite alcanzado (${MAX_PREPARING_ORDERS}). Espera a que se libere un espacio.`, 'warning');
-      return;
-    }
-    setLoadingOrderId(orderId);
-    // Actualización optimista: guardar el nuevo estado esperado
-    const newStatusApp = currentStatus === 'queue' ? 'preparing' : 'ready';
-    setOptimisticUpdates((prev) => new Map(prev).set(orderId, newStatusApp));
-    try {
-      const newStatusApi = currentStatus === 'queue' ? 'EnPreparacion' : 'ListoParaEntregar';
-      await ordersApi.updateOrderDetailStatus(token, order.ordenId, [order.id], newStatusApi);
-      // El WebSocket actualizará el estado, y el efecto limpiará optimisticUpdates
-    } catch (err) {
-      showToast('Error al actualizar estado', 'error');
-      // Revertir cambio optimista en caso de error
-      setOptimisticUpdates((prev) => {
-        const newMap = new Map(prev);
-        newMap.delete(orderId);
-        return newMap;
-      });
-    } finally {
-      setLoadingOrderId(null);
-    }
-  };
-
-  const confirmOrder = async (orderId: number) => {
-    const order = currentPreparingOrders.find(o => o.id === orderId);
+  const moveToReady = async (orderId: number) => {
+    const order = currentQueueOrders.find(o => o.id === orderId);
     if (!order || !token) return;
     setLoadingOrderId(orderId);
-    // Actualización optimista: guardar el nuevo estado esperado
+    
+    // Actualización optimista: mostrar como 'ready' directamente
     setOptimisticUpdates((prev) => new Map(prev).set(orderId, 'ready'));
+    
     try {
+      // En Barra, las órdenes van directamente de "Solicitado" a "ListoParaEntregar"
+      // sin pasar por "En Preparación"
       await ordersApi.updateOrderDetailStatus(token, order.ordenId, [order.id], 'ListoParaEntregar');
       // El WebSocket actualizará el estado, y el efecto limpiará optimisticUpdates
     } catch (err) {
-      showToast('Error al confirmar orden', 'error');
+      console.error('Error al mover orden a Listos:', err);
+      showToast('Error al mover orden a Listos', 'error');
       // Revertir cambio optimista en caso de error
       setOptimisticUpdates((prev) => {
         const newMap = new Map(prev);
@@ -231,26 +132,25 @@ export default function KitchenScreen() {
   };
 
   const handleCancelOrder = async (orderId: number) => {
-    const order = [...currentQueueOrders, ...currentPreparingOrders, ...currentReadyOrders].find(o => o.id === orderId);
+    const order = [...currentQueueOrders, ...currentReadyOrders].find(o => o.id === orderId);
     if (!order || !token) return;
-    
+
     // No permitir cancelar órdenes que ya están listas
     if (order.status === 'ready') {
       showToast('No se puede cancelar una orden que ya está lista', 'warning');
       return;
     }
-    
+
     setLoadingOrderId(orderId);
-    
+
     try {
       // Actualización optimista: marcar la orden como cancelada para que desaparezca inmediatamente
       setCanceledOrders((prev) => new Set(prev).add(orderId));
-      
+
       // Llamar a la API para cancelar
       await ordersApi.cancelOrderDetail(token, orderId, 'Cancelacion');
-      
+
       // El WebSocket recibirá el evento con estado "Cancelado" y eliminará la orden automáticamente
-      // Cuando el WebSocket actualice, también limpiaremos el Set de canceledOrders
       showToast(`Orden "${order.producto}" cancelada`, 'success');
     } catch (err) {
       console.error('Error cancelando orden:', err);
@@ -283,7 +183,7 @@ export default function KitchenScreen() {
       <KitchenHeader />
 
       {/* Toast de notificaciones */}
-      <Toast 
+      <Toast
         message={toast.message}
         type={toast.type}
         visible={toast.visible}
@@ -296,26 +196,18 @@ export default function KitchenScreen() {
         </View>
       )}
 
-      <View className="flex-1 flex-row gap-2 p-2 px-4">
+      <View className="flex-1 flex-row gap-2 p-2 px-4 justify-center">
         <OrderColumn
           title="En Cola"
           status="queue"
           orders={currentQueueOrders}
           onToggleItem={toggleItem}
-          onMoveToNext={moveToNextStatus}
+          onMoveToNext={(orderId: number, currentStatus: string) => {
+            if (currentStatus === 'queue') {
+              moveToReady(orderId);
+            }
+          }}
           onCancelOrder={handleCancelOrder}
-          isNextColumnFull={!canMoveToPreparing}
-          loadingOrderId={loadingOrderId}
-        />
-        <OrderColumn
-          title="En Preparación"
-          status="preparing"
-          orders={currentPreparingOrders}
-          onToggleItem={toggleItem}
-          onMoveToNext={moveToNextStatus}
-          onConfirmOrder={confirmOrder}
-          onCancelOrder={handleCancelOrder}
-          maxOrders={MAX_PREPARING_ORDERS}
           loadingOrderId={loadingOrderId}
         />
         <OrderColumn
@@ -323,7 +215,11 @@ export default function KitchenScreen() {
           status="ready"
           orders={currentReadyOrders}
           onToggleItem={toggleItem}
-          onMoveToNext={moveToNextStatus}
+          onMoveToNext={(orderId: number, currentStatus: string) => {
+            // En "Listos" no hay acciones disponibles
+            // El mesero marca como "Entregado" y desaparecen automáticamente
+          }}
+          onCancelOrder={handleCancelOrder}
           loadingOrderId={loadingOrderId}
         />
       </View>
